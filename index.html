@@ -9,56 +9,58 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-   crossorigin=""></script>
 
     
     <title>Frontend Mentor | IP Address Tracker</title>
     
   </head>
   <body>
-    <div class="main-container">
+    <header>
+      <div class="header-container">
 
-      <h1>IP Address Tracker</h1>
+        <h1>IP Address Tracker</h1>
 
-      <!-- SEARCH FORM -->
-      <form class="search-form">
-        <input type="text" placeholder="Search for any IP address or domain">
-        <input type="image" name="submit" src="images/icon-arrow.svg" alt="Submit">
-      </form>
-    
-      <!-- IP DATA CONTAINER -->
-      <div class="data-row">
-        <div class="data-column">
-          <div class="data-name">IP Address</div>
-          <div class="data-info" id="ip-address"></div>
+        <!-- SEARCH FORM -->
+        <form class="search-form">
+          <p id="error">Invalid IP address or domain</p>
+          <input type="text" name="searchInput" placeholder="Search for any IP address or domain">
+          <input type="image" name="submit" src="images/icon-arrow.svg" alt="Submit">
+        </form>
+      
+        <!-- IP DATA CONTAINER -->
+        <div class="data-row">
+          <div class="data-column">
+            <span class="data-name">IP Address</span>
+            <h2 class="data-info" id="ip-address"></h2>
+          </div>
+          <div class="data-column">
+            <span class="data-name">Location</span>
+            <h2 class="data-info" id="location"></h2>
+          </div>
+          <div class="data-column">
+            <span class="data-name">Timezone</span>
+            <h2 class="data-info" id="timezone"></h2>
+          </div>
+          <div class="data-column">
+            <span class="data-name">ISP</span>
+            <h2 class="data-info" id="isp"></h2>
+          </div>
         </div>
-        <div class="data-column">
-          <div class="data-name">Location</div>
-          <div class="data-info" id="location"></div>
-        </div>
-        <div class="data-column">
-          <div class="data-name">Timezone</div>
-          <div class="data-info" id="timezone"></div>
-        </div>
-        <div class="data-column">
-          <div class="data-name">ISP</div>
-          <div class="data-info" id="isp"></div>
-        </div>
+
       </div>
-
-    </div>
+    </header>
 
     <!-- MAP CONTAINER -->
-    <div id="map"></div>
+    <main id="map"></main>
     
    <!---
     <div class="attribution">
       Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
       Coded by <a href="#">Lauren</a>.
     </div> -->
-  
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""></script>
     <script src="js/index.js"></script>
   </body>
 </html>
