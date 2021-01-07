@@ -35,7 +35,6 @@ const displayMap = (lat, lng) => {
     if (marker != null) marker.remove();
 
     marker = L.marker([lat, lng], {icon: markerIcon}).addTo(map);
-    // marker.addTo(map);
 };
 
 // render ip data
