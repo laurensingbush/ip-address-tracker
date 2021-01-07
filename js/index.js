@@ -1,42 +1,41 @@
-
 const ipAddress = document.getElementById("ip-address");
 const ipLocation = document.getElementById("location");
 const timezone = document.getElementById("timezone");
 const isp = document.getElementById("isp");
 const ipInput = document.querySelector(".search-form");
+const inputError = document.getElementById("error");
+const userInput = ipInput.searchInput;
 
 // initialize the map
-var map = L.map("map");
+const map = L.map("map", {
+    zoomControl: false
+});
 
-// latitude and longitude variables
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: `&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors`
+}).addTo(map);
+
+L.control.zoom({
+    position: 'bottomright'
+}).addTo(map);
+
+
 let lat;
-let long;
+let lng;
 
 const displayMap = () => {
     // create location marker icon
-    var markerIcon = L.icon ({
+    const markerIcon = L.icon ({
         iconUrl: "images/icon-location.svg",
-        iconSize: [46, 56], // size of the icon
-        iconAnchor: [23, 55] // point of the icon which corresponds to marker's location
+        iconSize: [40, 50]
     });
 
-    // set map's view to geographical coordinates and zoom level
-    map.setView([lat, long], 13);
-
-    // add tile layer from Mapbox API
-    L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
-    attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
-    maxZoom: 18,
-    id: "mapbox/streets-v11",
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: "pk.eyJ1IjoibHNpbmdidXNoIiwiYSI6ImNrZzZ2cXcxbjAxZHkycXFvY25qbmx3dDAifQ.-JECJ6LH6lOH0h0qyHldkQ"
-    }).addTo(map);
+    // set map's view to coordinates and zoom level
+    map.setView([lat, lng], 13);
 
     // add location marker to map
-    L.marker([lat, long], {icon: markerIcon}).addTo(map);
-}
-
+    L.marker([lat, lng], {icon: markerIcon}).addTo(map);
+};
 
 // render ip data
 const displayIpData = (data) => {
@@ -46,26 +45,45 @@ const displayIpData = (data) => {
     isp.innerText = data.isp;
 };
 
-
-// fetch the JSON data from IP Geolocation API
-const getIpData = (ipAddress = "") => {
-    fetch(`https://geo.ipify.org/api/v1?apiKey=at_oooRktUnyBJB1i77jSj2QWUJ2EaPj&ipAddress=${ipAddress}`)
+// fetch JSON data from IP Geolocation API
+const getIpData = (inputValue = "", searchType= "IP") => {
+    const url = 
+        searchType === "IP" 
+            ? `https://geo.ipify.org/api/v1?apiKey=at_oooRktUnyBJB1i77jSj2QWUJ2EaPj&ipAddress=${inputValue}`
+            : `https://geo.ipify.org/api/v1?apiKey=at_oooRktUnyBJB1i77jSj2QWUJ2EaPj&domain=${inputValue}`
+    fetch(url)
     .then(response => response.json())
     .then(data => {
         lat = data.location.lat;
-        long = data.location.lng;
+        lng = data.location.lng;
         displayIpData(data);
         displayMap();
     })
-    .catch(error => console.log(error))
+    .catch((error) => {
+        inputError.style.display = "block";
+        setTimeout(() => {
+            inputError.style.display = "none";
+            userInput.value = "";
+        }, 3000);
+        console.log(error);
+    });
 };
 
-getIpData();
+// regex for valid user input
+const validIpRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
+const validDomainRegex = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$";
 
-// get ip address on submit
-ipInput.addEventListener("submit", event => {
-    event.preventDefault();
-    getIpData(event.target[0].value);
-    event.target[0].value = "";
+// get ip address or domain input on submit
+ipInput.addEventListener("submit", (e) => {
+    e.preventDefault();
+    
+    if (userInput.value.match(validIpRegex)) {
+        getIpData(userInput.value);
+    }
+    if (userInput.value.match(validDomainRegex)) {
+        getIpData(userInput.value, (searchType = "Domain"));
+    }
 });
+
+getIpData();
 
