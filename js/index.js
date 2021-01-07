@@ -19,22 +19,23 @@ L.control.zoom({
     position: 'bottomright'
 }).addTo(map);
 
+const markerIcon = L.icon ({
+    iconUrl: "images/icon-location.svg",
+    iconSize: [40, 50]
+});
 
-let lat;
-let lng;
 
-const displayMap = () => {
-    // create location marker icon
-    const markerIcon = L.icon ({
-        iconUrl: "images/icon-location.svg",
-        iconSize: [40, 50]
-    });
+let marker;
 
+const displayMap = (lat, lng) => {
     // set map's view to coordinates and zoom level
     map.setView([lat, lng], 13);
 
-    // add location marker to map
-    L.marker([lat, lng], {icon: markerIcon}).addTo(map);
+    // remove previous marker before adding new one
+    if (marker != null) marker.remove();
+
+    marker = L.marker([lat, lng], {icon: markerIcon}).addTo(map);
+    // marker.addTo(map);
 };
 
 // render ip data
@@ -57,7 +58,7 @@ const getIpData = (inputValue = "", searchType= "IP") => {
         lat = data.location.lat;
         lng = data.location.lng;
         displayIpData(data);
-        displayMap();
+        displayMap(lat, lng);
     })
     .catch((error) => {
         inputError.style.display = "block";
